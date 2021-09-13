@@ -44,9 +44,11 @@
 	 if( isset( $_POST['button1'] ) )
  {
 
+$page = 1; // текущая страница
+$kol = 3;  //количество записей для вывода
+$art = ($page * $kol) - $kol; // определяем, с какой записи нам выводить	
 	
-	
-$querysubmit1 = "SELECT * FROM `user` WHERE `created_at`> DATE_SUB(CURRENT_DATE(),INTERVAL 8 MONTH) ORDER BY `last_name` ASC ;";
+$querysubmit1 = "SELECT * FROM `user` WHERE `created_at`> DATE_SUB(CURRENT_DATE(),INTERVAL 8 MONTH) ORDER BY `last_name` ASC  LIMIT $art,$kol;";
 $result = mysqli_query($com,$querysubmit1 );
 $count = mysqli_num_rows($result);
 print "<table>";
@@ -83,6 +85,17 @@ print "</tr>";
 }
 print "</table>";}
 
+
+ if (isset($_GET['page'])){
+   $page = $_GET['page'];
+}else $page = 1;
+$res = mysql_query("SELECT COUNT(*) FROM `user` WHERE `created_at`> DATE_SUB(CURRENT_DATE(),INTERVAL 8 MONTH) ORDER BY `last_name` ASC ");
+$row = mysql_fetch_row($res);
+$total = $row[0]; // всего записей
+$str_pag = ceil($total / $kol);
+for ($i = 1; $i <= $str_pag; $i++){
+  echo "<a href=lessons.php?page=".$i."> Страница ".$i." </a>";
+}
 }
 
 
