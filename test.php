@@ -21,7 +21,7 @@
 
 	</head>
 
-<form action="test.php" method="get">
+<form action="test.php" method="post">
 <button name="button1">Испытательный срок</button>
 <button name="button2">Уволенные</button>
 <button name="button3">Начальники</button>
@@ -32,19 +32,19 @@
 <?php
  $con= mysqli_connect("localhost","root","","test");
 
-	 if( isset( $_GET['button1'] ) )
+	 if( isset( $_POST['button1'] ) )
  {
  if (isset($_GET['page'])){
    $page = $_GET['page'];
 }else $page = 1;
-
+//echo $page;
 //$page = 1; // текущая страница
-$kol = 2;  //количество записей для вывода
+$kol = 5;  //количество записей для вывода
 $art = ($page * $kol) - $kol; // определяем, с какой записи нам выводить
 //echo $art;
 $res = mysqli_query($con, "SELECT COUNT(*) FROM `user` WHERE `created_at`> DATE_SUB(CURRENT_DATE(),INTERVAL 8 MONTH) ORDER BY `last_name` ASC ");
-$row = mysqli_fetch_row($res);
-$total = $row[0]; // всего записей
+$row3 = mysqli_fetch_row($res);
+$total = $row3[0]; // всего записей
 //echo $total;
 
 $str_pag = ceil($total / $kol);
@@ -97,7 +97,7 @@ print "</table>";}
 }
 
 
-	 if( isset( $_GET['button2'] ) )
+	 if( isset( $_POST['button2'] ) )
  {
 
 $querysubmit2 = "SELECT user.last_name,user.first_name, user.middle_name ,dismission_reason.description,user_dismission.is_active, user_dismission.created_at FROM `user_dismission` INNER JOIN dismission_reason ON `user_dismission`.`reason_id` = `dismission_reason`.`id` INNER JOIN user ON `user_dismission`.`user_id` = user.id WHERE `is_active` = 0 GROUP BY user_id ;";
@@ -147,7 +147,7 @@ print "</table>";}
 
 
 
-	 if( isset( $_GET['button3'] ) )
+	 if( isset( $_POST['button3'] ) )
  {
 
 $querysubmit3 = "SELECT user_position.department_id, department.description, user_position.position_id, user.last_name FROM user_position INNER JOIN user ON user_position.user_id = user.id INNER JOIN department ON user_position.department_id = department.id GROUP BY user_position.department_id  ORDER BY user_position.created_at DESC;";
