@@ -21,7 +21,7 @@
 
 	</head>
 
-<form action="test.php" method="post">
+<form action="test.php" method="get">
 <button name="button1">Испытательный срок</button>
 <button name="button2">Уволенные</button>
 <button name="button3">Начальники</button>
@@ -30,7 +30,7 @@
 <br/>
 <body>
 <?php
- $com = mysqli_connect("localhost","root","","test");
+ $con= mysqli_connect("localhost","root","","test");
 //echo "Привет";
 //$sname="localhost";
 //$uname ="root";
@@ -41,15 +41,31 @@
 
 //function test1($sname,$uname,$pass,$dbname)
 //{
-	 if( isset( $_POST['button1'] ) )
+	 if( isset( $_GET['button1'] ) )
  {
+ if (isset($_GET['page'])){
+   $page = $_GET['page'];
+}else $page = 1;
 
-$page = 1; // текущая страница
-$kol = 3;  //количество записей для вывода
-$art = ($page * $kol) - $kol; // определяем, с какой записи нам выводить	
+//$page = 1; // текущая страница
+$kol = 2;  //количество записей для вывода
+$art = ($page * $kol) - $kol; // определяем, с какой записи нам выводить
+//echo $art;
+$res = mysqli_query($con, "SELECT COUNT(*) FROM `user` WHERE `created_at`> DATE_SUB(CURRENT_DATE(),INTERVAL 8 MONTH) ORDER BY `last_name` ASC ");
+$row = mysqli_fetch_row($res);
+$total = $row[0]; // всего записей
+//echo $total;
+
+$str_pag = ceil($total / $kol);
+  //echo $str_pag;
+  
+for ($i = 1; $i <= $str_pag; $i++){
+  echo "<a href=test.php?page=".$i."> Страница ".$i." </a>";
+}
+	
 	
 $querysubmit1 = "SELECT * FROM `user` WHERE `created_at`> DATE_SUB(CURRENT_DATE(),INTERVAL 8 MONTH) ORDER BY `last_name` ASC  LIMIT $art,$kol;";
-$result = mysqli_query($com,$querysubmit1 );
+$result = mysqli_query($con,$querysubmit1 );
 $count = mysqli_num_rows($result);
 print "<table>";
 print "<tr>";
@@ -86,16 +102,7 @@ print "</tr>";
 print "</table>";}
 
 
- if (isset($_GET['page'])){
-   $page = $_GET['page'];
-}else $page = 1;
-$res = mysql_query("SELECT COUNT(*) FROM `user` WHERE `created_at`> DATE_SUB(CURRENT_DATE(),INTERVAL 8 MONTH) ORDER BY `last_name` ASC ");
-$row = mysql_fetch_row($res);
-$total = $row[0]; // всего записей
-$str_pag = ceil($total / $kol);
-for ($i = 1; $i <= $str_pag; $i++){
-  echo "<a href=lessons.php?page=".$i."> Страница ".$i." </a>";
-}
+
 }
 
 
@@ -103,7 +110,7 @@ for ($i = 1; $i <= $str_pag; $i++){
  {
 
 $querysubmit2 = "SELECT user.last_name,user.first_name, user.middle_name ,dismission_reason.description,user_dismission.is_active, user_dismission.created_at FROM `user_dismission` INNER JOIN dismission_reason ON `user_dismission`.`reason_id` = `dismission_reason`.`id` INNER JOIN user ON `user_dismission`.`user_id` = user.id WHERE `is_active` = 0 GROUP BY user_id ;";
-$result = mysqli_query($com,$querysubmit2 );
+$result = mysqli_query($con,$querysubmit2 );
 $count = mysqli_num_rows($result);
 print "<table>";
 print "<tr>";
@@ -164,7 +171,7 @@ $querysubmit3 ="SELECT user_position.department_id, user_position.user_id, user.
 //SELECT department.id, department.name, department.leader_id,user_position.user_id FROM `department` INNER JOIN user_position on department.id = user_position.department_id GROUP BY leader_id ORDER BY user_position.created_ad DESC LIMIT 1;
 
 $querysubmit3 = "SELECT user_position.department_id, user_position.position_id, user.last_name FROM user_position INNER JOIN user ON user_position.user_id = user.id GROUP BY user_position.department_id  ORDER BY user_position.created_at DESC;";
-$result = mysqli_query($com,$querysubmit3 );
+$result = mysqli_query($con,$querysubmit3 );
 $count = mysqli_num_rows($result);
 print "<table>";
 print "<tr>";
