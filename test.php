@@ -21,7 +21,7 @@
 
 	</head>
 
-<form action="test.php" method="get">
+<form action="test.php" method="post">
 <button name="button1">Испытательный срок</button>
 <button name="button2">Уволенные</button>
 <button name="button3">Начальники</button>
@@ -41,7 +41,7 @@
 
 //function test1($sname,$uname,$pass,$dbname)
 //{
-	 if( isset( $_GET['button1'] ) )
+	 if( isset( $_POST['button1'] ) )
  {
  if (isset($_GET['page'])){
    $page = $_GET['page'];
