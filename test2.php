@@ -20,7 +20,7 @@
 
 
 	</head>
-
+//
 <form action="test.php" method="get">
 <button name="button1">Испытательный срок</button>
 <button name="button2">Уволенные</button>
